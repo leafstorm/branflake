@@ -1,0 +1,7 @@
+# Generated assembly files
+*.LST
+*.OBJ
+*.EXE
+
+# Generated code for examples
+examples/*.ASM
