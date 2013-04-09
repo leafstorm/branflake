@@ -98,6 +98,9 @@ csendasm    db "bfend:", NL             ; Generated at end of code.
             db "    int 21h", NL        ; (ah = 4C: exit)
             db "end bfstart", NL, Z     ; Sets the program's start label.
 
+errstartasm db ".err <", Z
+errendasm   db ">", NL, "end", NL, EOF, Z
+
 ;--------------------------------------------------------------------------
 ;   Instruction assembly templates
 ;--------------------------------------------------------------------------
@@ -269,38 +272,33 @@ bracketsp   dw 0                        ; Offset to right above the top
 ;--------------------------------------------------------------------------
 ;   Error messages
 ;--------------------------------------------------------------------------
-bracketlimit1 db ".ERR <Program bracket limit of 65,535"
-              db " exceeded at line ", Z
+bracketlimit1 db "Program bracket limit of 65,535 exceeded at line ", Z
 bracketlimit2 db " column ", Z
-bracketlimit3 db ">", NL, "END", NL, EOF, Z
 
-bracketlimit dw bracketlimit1, NUMBER, bracketlimit2, NUMBER, bracketlimit3
-             dw ENDMSG
+bracketlimit dw errstartasm, bracketlimit1, NUMBER, bracketlimit2, NUMBER
+             dw errendasm, ENDMSG
 
 
-bracketfull1 db ".ERR <Nested bracket limit of &bracketmax&"
-             db " exceeded at line ", Z
+bracketfull1 db "Nested bracket limit of &bracketmax& exceeded at line ", Z
 bracketfull2 db " column ", Z
-bracketfull3 db ">", NL, "END", NL, EOF, Z
 
-bracketfull dw bracketfull1, NUMBER, bracketfull2, NUMBER, bracketfull3
-            dw ENDMSG
+bracketfull dw errstartasm, bracketfull1, NUMBER, bracketfull2, NUMBER
+            dw errendasm, ENDMSG
 
 
-bracketempty1 db ".ERR <Extra ] at line ", Z
+bracketempty1 db "Extra ] at line ", Z
 bracketempty2 db " column ", Z
-bracketempty3 db ">", NL, "END", NL, EOF, Z
 
-bracketempty dw bracketempty1, NUMBER, bracketempty2, NUMBER, bracketempty3
-             dw ENDMSG
+bracketempty dw errstartasm, bracketempty1, NUMBER, bracketempty2, NUMBER
+             dw errendasm, ENDMSG
 
 
-bracketleft1 db ".ERR <Bracket at line ", Z
+bracketleft1 db "Bracket at line ", Z
 bracketleft2 db " column ", Z
-bracketleft3 db " was never closed>", NL, "END", NL, EOF, Z
+bracketleft3 db " was never closed", Z
 
-bracketleft dw bracketleft1, NUMBER, bracketleft2, NUMBER, bracketleft3
-            dw ENDMSG
+bracketleft dw errstartasm, bracketleft1, NUMBER, bracketleft2, NUMBER
+            dw bracketleft3, errendasm, ENDMSG
 
 ;--------------------------------------------------------------------------
             .code
